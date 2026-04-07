@@ -31,6 +31,38 @@ return [
     */
 
     'connections' => [
+        'admin' => [
+            'driver' => 'mysql',
+            'host' => env('DB_ADMIN_HOST'),
+            'port' => env('DB_ADMIN_PORT'),
+            'database' => env('DB_ADMIN_DATABASE'),
+            'username' => env('DB_ADMIN_USERNAME'),
+            'password' => env('DB_ADMIN_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+
+        'discounts' => [
+            'driver' => 'mysql',
+            'host' => env('DB_DISCOUNTS_HOST'),
+            'port' => env('DB_DISCOUNTS_PORT'),
+            'database' => env('DB_DISCOUNTS_DATABASE'),
+            'username' => env('DB_DISCOUNTS_USERNAME'),
+            'password' => env('DB_DISCOUNTS_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
+
+        'member' => [
+            'driver' => 'mysql',
+            'host' => env('DB_MEMBER_HOST'),
+            'port' => env('DB_MEMBER_PORT'),
+            'database' => env('DB_MEMBER_DATABASE'),
+            'username' => env('DB_MEMBER_USERNAME'),
+            'password' => env('DB_MEMBER_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+        ],
 
         'sqlite' => [
             'driver' => 'sqlite',
@@ -149,7 +181,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

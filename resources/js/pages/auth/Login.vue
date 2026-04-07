@@ -8,26 +8,24 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 
 defineOptions({
     layout: {
-        title: 'Log in to your account',
-        description: 'Enter your email and password below to log in',
+        title: 'Admin Sign In',
+        description: 'Industry Traveller backend portal — authorised personnel only',
     },
 });
 
 defineProps<{
     status?: string;
     canResetPassword: boolean;
-    canRegister: boolean;
 }>();
 </script>
 
 <template>
-    <Head title="Log in" />
+    <Head title="Admin Sign In" />
 
     <div
         v-if="status"
@@ -53,7 +51,7 @@ defineProps<{
                     autofocus
                     :tabindex="1"
                     autocomplete="email"
-                    placeholder="email@example.com"
+                    placeholder="admin@example.com"
                 />
                 <InputError :message="errors.email" />
             </div>
@@ -96,16 +94,14 @@ defineProps<{
                 data-test="login-button"
             >
                 <Spinner v-if="processing" />
-                Log in
+                Sign In
             </Button>
         </div>
 
-        <div
-            class="text-center text-sm text-muted-foreground"
-            v-if="canRegister"
-        >
-            Don't have an account?
-            <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
-        </div>
+        <!-- No self-registration: admins are invited by other admins -->
+        <p class="text-center text-sm text-muted-foreground">
+            Access is restricted to authorised administrators.<br />
+            Contact an existing admin to request access.
+        </p>
     </Form>
 </template>
