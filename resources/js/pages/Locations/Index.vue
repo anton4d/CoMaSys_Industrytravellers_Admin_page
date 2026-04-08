@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-vue-next';
+import { Trash2, Pencil } from 'lucide-vue-next';
 import { ref } from 'vue';
+import { edit,create } from '@/routes/locations';
 
 defineOptions({
     layout: {
@@ -13,7 +14,14 @@ defineOptions({
     },
 });
 
-const props = defineProps<{ locations: Record<string, any[]>, flash?: { success?: string } }>();
+const props = defineProps<{ 
+    locations: Record<string, any[]>, 
+    flash?: { success?: string }, 
+    types: { id: number; name: string }[], 
+}>();
+
+const typeLabel = (id: number) => props.types.find(t => t.id === id)?.name ?? '—';
+
 const locations = props.locations || {};
 
 // Toast state
@@ -31,9 +39,6 @@ const deleteLocation = (id: number) => {
         onSuccess: () => {
             toast.value = 'Location deleted!';
             setTimeout(() => toast.value = '', 3000);
-
-
-            router.reload({ only: ['locations'] });
         },
     });
 };
@@ -50,7 +55,7 @@ const deleteLocation = (id: number) => {
     <div class="p-6 space-y-8">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold">Locations</h1>
-            <Button as="a" href="/locations/create">Add Location</Button>
+            <Button as="a" :href='create().url'>Add Location</Button>
         </div>
 
         <div v-for="(group, cityCountry) in locations" :key="cityCountry" class="space-y-3">
@@ -74,13 +79,16 @@ const deleteLocation = (id: number) => {
                             class="border-t border-border hover:bg-accent/50 transition-colors">
                             <td class="px-4 py-2 font-medium">{{ location.name }}</td>
                             <td class="px-4 py-2 text-muted-foreground">{{ location.info?.address ?? '—' }}</td>
-                            <td class="px-4 py-2">{{ location.type ?? '—' }}</td>
+                            <td class="px-4 py-2">{{ typeLabel(location.type) }}</td>
                             <td class="px-4 py-2">
                                 {{ location.expiration_date
                                     ? new Date(location.expiration_date).toLocaleDateString('en-GB')
-                                : '—' }}
+                                    : '—' }}
                             </td>
-                            <td class="px-4 py-2 text-right">
+                            <td class="px-4 py-2 text-right space-x-2">
+                                <Button variant="outline" size="sm" as="a" :href="edit(location).url">
+                                    <Pencil class="w-4 h-4" />
+                                </Button>
                                 <Button variant="destructive" size="sm" @click="deleteLocation(location.id)">
                                     <Trash2 class="w-4 h-4" />
                                 </Button>

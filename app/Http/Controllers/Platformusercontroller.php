@@ -36,7 +36,6 @@ class PlatformUserController extends Controller
             'verifi_email_verified_at' => now(),
         ]);
 
-        // If user came via email-only verification (no photo), add domain to accepted list
         if (!$user->id_photo_path && $user->verifi_email) {
             $domain = substr(strrchr($user->verifi_email, '@'), 1);
 

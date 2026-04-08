@@ -14,8 +14,6 @@ defineOptions({
             { title: 'Dashboard', href: '/dashboard' },
             { title: 'Create Admin User', href: '/admin/register' },
         ],
-        title: 'Create Admin User',
-        description: 'Create a new admin account',
     },
 });
 </script>
