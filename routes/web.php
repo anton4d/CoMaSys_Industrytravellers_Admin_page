@@ -23,7 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('locations/{location}', [LocationController::class, 'update'])->name('locations.update');
     Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
     Route::delete('locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
-    
+    Route::get('/locations/csv-import', [CsvImportController::class, 'locations'])->name('csv.locations');
+
     // all routes to do with the platform user
     Route::get('users', [PlatformUserController::class, 'index'])->name('users.index');
     Route::get('users/{user}/verify', [PlatformUserController::class, 'showVerify'])->name('users.verify.show');
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('brands/{brand}', [BrandController::class, 'update'])->name('brand.update');
     Route::get('brands', [BrandController::class, 'index'])->name('brand.index');
     Route::delete('brands/{brand}', [BrandController::class, 'destroy'])->name('brand.destroy');
+    Route::get('/brands/csv-import',    [CsvImportController::class, 'brands'])->name('csv.brands');
 
     // all routes to do with discounts
     Route::get('discounts/create', [DiscountController::class, 'create'])->name('discount.create');
@@ -54,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('discounts/{discount}', [DiscountController::class, 'update'])->name('discount.update');
     Route::get('discounts', [DiscountController::class, 'index'])->name('discount.index');
     Route::delete('discounts/{discount}', [DiscountController::class, 'destroy'])->name('discount.destroy');
+    Route::get('/discounts/csv-import', [CsvImportController::class, 'discounts'])->name('csv.discounts');
 
     // all routes to do with csv controller
     Route::get('/csv-import', [CsvImportController::class, 'index'])->name('csv.index');

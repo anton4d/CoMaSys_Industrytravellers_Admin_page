@@ -113,4 +113,8 @@ class CsvImportController extends Controller
             );
         }
     }
+
+    public function locations() { return inertia('Locations/CsvImport'); }
+    public function brands()    { return inertia('Brands/CsvImport'); }
+    public function discounts() { return inertia('Discounts/CsvImport'); }
 }
