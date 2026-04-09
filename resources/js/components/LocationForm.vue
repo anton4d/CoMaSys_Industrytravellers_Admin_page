@@ -6,29 +6,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import type { Brand, Location, LocationType } from '@/types';
 
 const props = defineProps<{
     formProps: Record<string, any>;
     buttonText: string;
-    types: { id: number; name: string }[];
-    location?: {
-        name?: string;
-        latitude?: number;
-        longitude?: number;
-        expiration_date?: string;
-        type?: number;
-        info?: {
-            address?: string;
-            description?: string | null;
-            link?: string | null;
-            photo_path?: string | null;
-            discount_info?: string | null;
-        };
-    };
+    types: LocationType[];
+    brands: Brand[];
+    location?: Location;
 }>();
 
-const selectedType = ref(props.location?.type ?? '');
-const expirationDate = ref(props.location?.expiration_date?.slice(0, 10) ?? '');
+const selectedType  = ref(props.location?.type ?? '');
+const selectedBrand = ref(props.location?.brand_id ?? '');
 </script>
 
 <template>
@@ -42,6 +31,30 @@ const expirationDate = ref(props.location?.expiration_date?.slice(0, 10) ?? '');
             </div>
 
             <div class="grid gap-2">
+                <Label for="brand_id">Brand</Label>
+                <select id="brand_id" name="brand_id" v-model="selectedBrand"
+                    class="input bg-background text-foreground" required>
+                    <option value="" disabled>Select a brand</option>
+                    <option v-for="brand in brands" :key="brand.id" :value="brand.id">
+                        {{ brand.name }}
+                    </option>
+                </select>
+                <InputError :message="errors.brand_id" />
+            </div>
+
+            <div class="grid gap-2">
+                <Label for="type">Type</Label>
+                <select id="type" name="type" v-model="selectedType"
+                    class="input bg-background text-foreground" required>
+                    <option value="" disabled>Select a type</option>
+                    <option v-for="type in types" :key="type.id" :value="type.id">
+                        {{ type.name }}
+                    </option>
+                </select>
+                <InputError :message="errors.type" />
+            </div>
+
+            <div class="grid gap-2">
                 <Label for="latitude">Latitude</Label>
                 <Input id="latitude" name="latitude" :default-value="location?.latitude" placeholder="Latitude" required />
                 <InputError :message="errors.latitude" />
@@ -51,24 +64,6 @@ const expirationDate = ref(props.location?.expiration_date?.slice(0, 10) ?? '');
                 <Label for="longitude">Longitude</Label>
                 <Input id="longitude" name="longitude" :default-value="location?.longitude" placeholder="Longitude" required />
                 <InputError :message="errors.longitude" />
-            </div>
-
-            <div class="grid gap-2">
-                <Label for="expiration_date">Expiration Date</Label>
-                <input id="expiration_date" name="expiration_date" type="date" v-model="expirationDate"
-                    class="input bg-background text-foreground" required />
-                <InputError :message="errors.expiration_date" />
-            </div>
-
-            <div class="grid gap-2">
-                <Label for="type">Type</Label>
-                <select id="type" name="type" v-model="selectedType" class="input bg-background text-foreground" required>
-                    <option value="" disabled>Select a type</option>
-                    <option v-for="type in types" :key="type.id" :value="type.id">
-                        {{ type.name }}
-                    </option>
-                </select>
-                <InputError :message="errors.type" />
             </div>
 
             <div class="grid gap-2">
@@ -93,12 +88,6 @@ const expirationDate = ref(props.location?.expiration_date?.slice(0, 10) ?? '');
                 <Label for="photo_path">Photo Path</Label>
                 <Input id="photo_path" name="photo_path" :default-value="location?.info?.photo_path ?? ''" placeholder="Photo Path" />
                 <InputError :message="errors.photo_path" />
-            </div>
-
-            <div class="grid gap-2">
-                <Label for="discount_info">Discount Info</Label>
-                <Input id="discount_info" name="discount_info" :default-value="location?.info?.discount_info ?? ''" placeholder="Discount Info" />
-                <InputError :message="errors.discount_info" />
             </div>
 
             <Button type="submit" class="mt-2 w-full" :disabled="processing">

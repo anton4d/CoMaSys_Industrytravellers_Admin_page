@@ -8,11 +8,13 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { store } from '@/routes/admin';
 
+
 defineOptions({
     layout: {
         breadcrumbs: [
             { title: 'Dashboard', href: '/dashboard' },
-            { title: 'Create Admin User', href: '/admin/register' },
+            { title: 'admins',href:'/admins' },
+            { title: 'Create Admin User', href: '/admins/register' },
         ],
     },
 });

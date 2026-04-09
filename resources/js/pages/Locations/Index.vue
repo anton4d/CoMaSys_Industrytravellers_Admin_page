@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Head, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
-import { Trash2, Pencil } from 'lucide-vue-next';
+import { Trash2, Pencil } from '@lucide/vue';
 import { ref } from 'vue';
-import { edit,create } from '@/routes/locations';
+import { edit, create } from '@/routes/locations';
+import type { Location } from '@/types/models';
 
 defineOptions({
     layout: {
@@ -14,26 +15,19 @@ defineOptions({
     },
 });
 
-const props = defineProps<{ 
-    locations: Record<string, any[]>, 
-    flash?: { success?: string }, 
-    types: { id: number; name: string }[], 
+const props = defineProps<{
+    locations: Record<string, Location[]>,
+    flash?: { success?: string },
+    types: { id: number; name: string }[],
 }>();
 
 const typeLabel = (id: number) => props.types.find(t => t.id === id)?.name ?? '—';
 
-const locations = props.locations || {};
-
-// Toast state
 const toast = ref(props.flash?.success ?? '');
-
-if (toast.value) {
-    setTimeout(() => toast.value = '', 3000);
-}
+if (toast.value) setTimeout(() => toast.value = '', 3000);
 
 const deleteLocation = (id: number) => {
     if (!confirm('Are you sure you want to delete this location?')) return;
-
     router.visit(`/locations/${id}`, {
         method: 'delete',
         onSuccess: () => {
@@ -44,24 +38,22 @@ const deleteLocation = (id: number) => {
 };
 </script>
 
-
 <template>
-
     <Head title="Locations" />
+
     <div v-if="toast"
         class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300">
         {{ toast }}
     </div>
-    <div class="p-6 space-y-8">
+
+    <div class="p-6 space-y-10">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold">Locations</h1>
-            <Button as="a" :href='create().url'>Add Location</Button>
+            <Button as="a" :href="create().url">Add Location</Button>
         </div>
 
-        <div v-for="(group, cityCountry) in locations" :key="cityCountry" class="space-y-3">
-            <h2 class="text-lg font-semibold text-muted-foreground border-b border-border pb-1">
-                {{ cityCountry }}
-            </h2>
+        <div v-for="(group, brandName) in locations" :key="brandName" class="space-y-3">
+            <h2 class="text-xl font-bold">{{ brandName }}</h2>
 
             <div class="rounded-md border border-border overflow-hidden">
                 <table class="w-full text-sm">
@@ -70,7 +62,6 @@ const deleteLocation = (id: number) => {
                             <th class="px-4 py-2 text-left font-medium">Name</th>
                             <th class="px-4 py-2 text-left font-medium">Address</th>
                             <th class="px-4 py-2 text-left font-medium">Type</th>
-                            <th class="px-4 py-2 text-left font-medium">Expires</th>
                             <th class="px-4 py-2 text-left font-medium"></th>
                         </tr>
                     </thead>
@@ -80,11 +71,6 @@ const deleteLocation = (id: number) => {
                             <td class="px-4 py-2 font-medium">{{ location.name }}</td>
                             <td class="px-4 py-2 text-muted-foreground">{{ location.info?.address ?? '—' }}</td>
                             <td class="px-4 py-2">{{ typeLabel(location.type) }}</td>
-                            <td class="px-4 py-2">
-                                {{ location.expiration_date
-                                    ? new Date(location.expiration_date).toLocaleDateString('en-GB')
-                                    : '—' }}
-                            </td>
                             <td class="px-4 py-2 text-right space-x-2">
                                 <Button variant="outline" size="sm" as="a" :href="edit(location).url">
                                     <Pencil class="w-4 h-4" />

@@ -6,15 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    protected $connection = 'discounts';
+
     public function up(): void
     {
         Schema::connection('discounts')->create('locations', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('brand_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->double('latitude');
-            $table->double('longitude');
-            $table->date('expiration_date');
-            $table->integer('type');
+            $table->float('latitude');
+            $table->float('longitude');
+            $table->tinyInteger('type')->default(0);
             $table->timestamps();
         });
     }

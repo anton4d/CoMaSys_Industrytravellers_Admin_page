@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { FileSymlink, LayoutGrid,MapPin,Pencil  } from 'lucide-vue-next';
+import { Globe, LayoutGrid,MapPin,Pencil, ShoppingBasket, Store, Toolbox } from '@lucide/vue';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
@@ -15,8 +15,11 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard} from '@/routes';
-import {index} from '@/routes/locations'
-import { register } from '@/routes/admin';
+import {index as locationIndex} from '@/routes/locations'
+import { index as adminIndex } from '@/routes/admin';
+import {index as discountIndex } from '@/routes/discount';
+import { index as brandIndex } from '@/routes/brand';
+import {index as csvIndex} from '@/routes/csv'
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -26,23 +29,42 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Create new Admin',
-        href:register(),
+        title: 'Admins',
+        href:adminIndex(),
         icon: Pencil,
     },
     {
         title: 'Locations',
-        href:index(),
+        href:locationIndex(),
         icon: MapPin,
     },
-    
+    {
+        title: 'Discounts',
+        href: discountIndex(),
+        icon: ShoppingBasket,
+    },
+    {
+        title: 'Brands',
+        href: brandIndex(),
+        icon: Store,
+    },
+    {
+        title: 'Csv Import to database',
+        href: csvIndex(),
+        icon: Toolbox,
+    }
 ];
 
 const footerNavItems: NavItem[] = [
     {
         title: 'Main Page',
         href: 'https://industrytravellers.com/',
-        icon: FileSymlink,
+        icon: Globe,
+    },
+    {
+        title: 'Members Page',
+        href: 'https://member.industrytravellers.com/',
+        icon: Globe,
     },
 ];
 </script>

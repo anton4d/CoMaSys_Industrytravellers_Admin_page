@@ -14,7 +14,6 @@ class LocationInfo extends Model
         'description',
         'link',
         'photo_path',
-        'discount_info',
     ];
 
     public function location()
