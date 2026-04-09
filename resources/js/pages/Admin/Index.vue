@@ -20,6 +20,7 @@ defineOptions({
 
 const props = defineProps<{
     admins: User[],
+    permissions: { id: string; label: string }[],
     flash?: { success?: string },
 }>();
 
@@ -64,6 +65,7 @@ const deleteAdmin = (id: number) => {
                 <tr>
                     <th class="px-4 py-2 text-left font-medium">Name</th>
                     <th class="px-4 py-2 text-left font-medium">Email</th>
+                    <th class="px-4 py-2 text-left font-medium">Permissions</th>
                     <th class="px-4 py-2 text-left font-medium">Created at</th>
                     <th class="px-4 py-2 text-left font-medium"></th>
                 </tr>
@@ -73,6 +75,20 @@ const deleteAdmin = (id: number) => {
                     class="border-t border-border hover:bg-accent/50 transition-colors">
                     <td class="px-4 py-2 font-medium">{{ admin.name }}</td>
                     <td class="px-4 py-2 font-medium">{{ admin.email }}</td>
+                    <td class="px-4 py-2">
+                        <span v-if="admin.is_super_admin"
+                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                            Super Admin
+                        </span>
+                        <template v-else>
+                            <template v-for="permission in permissions" :key="permission.id">
+                                <span v-if="(admin as any)[permission.id]"
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 mr-1">
+                                    {{ permission.label }}
+                                </span>
+                            </template>
+                        </template>
+                    </td>
                     <td class="px-4 py-2">
                         {{ admin.created_at
                             ? new Date(admin.created_at).toLocaleDateString('en-GB')

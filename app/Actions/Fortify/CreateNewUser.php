@@ -25,9 +25,15 @@ class CreateNewUser implements CreatesNewUsers
         ])->validate();
 
         return User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
+            'name'     => $input['name'],
+            'email'    => $input['email'],
             'password' => $input['password'],
+            'can_manage_locations' => $input['can_manage_locations'] ?? false,
+            'can_manage_brands'    => $input['can_manage_brands'] ?? false,
+            'can_manage_discounts' => $input['can_manage_discounts'] ?? false,
+            'can_manage_users'     => $input['can_manage_users'] ?? false,
+            'can_manage_admins'    => $input['can_manage_admins'] ?? false,
+            'is_super_admin'       => $input['is_super_admin'] ?? false,
         ]);
     }
 }

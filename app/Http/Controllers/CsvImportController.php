@@ -8,6 +8,7 @@ use App\Models\LocationInfo;
 use App\Models\Discount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Enums\AdminPermission;
 
 class CsvImportController extends Controller
 {
@@ -24,6 +25,17 @@ class CsvImportController extends Controller
             'file'  => 'required|file|mimes:csv,txt',
             'model' => 'required|string|in:locations,brands,discounts',
         ]);
+
+        $user = $request->user();
+        $allowed = match ($request->model) {
+            'locations' => $user->is_super_admin || $user->{AdminPermission::ManageLocations->value},
+            'brands'    => $user->is_super_admin || $user->{AdminPermission::ManageBrands->value},
+            'discounts' => $user->is_super_admin || $user->{AdminPermission::ManageDiscounts->value},
+        };
+
+        if (!$allowed) {
+            abort(403, 'You do not have permission to import ' . $request->model . '.');
+        }
 
         $path = $request->file('file')->getRealPath();
         $rows = array_map(fn($line) => str_getcsv($line, ',', '"', ''), file($path));
@@ -114,7 +126,16 @@ class CsvImportController extends Controller
         }
     }
 
-    public function locations() { return inertia('Locations/CsvImport'); }
-    public function brands()    { return inertia('Brands/CsvImport'); }
-    public function discounts() { return inertia('Discounts/CsvImport'); }
+    public function locations()
+    {
+        return inertia('Locations/CsvImport');
+    }
+    public function brands()
+    {
+        return inertia('Brands/CsvImport');
+    }
+    public function discounts()
+    {
+        return inertia('Discounts/CsvImport');
+    }
 }

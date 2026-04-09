@@ -3,6 +3,8 @@ import { Head} from '@inertiajs/vue3';
 import { store } from '@/routes/locations';
 import LocationForm from '@/components/LocationForm.vue';
 import { Brand,LocationType } from '@/types';
+import { ref } from 'vue';
+import Toast from '@/components/Toast.vue';
 
 defineOptions({
     layout: {
@@ -16,12 +18,18 @@ defineOptions({
 const props = defineProps<{
     types: LocationType[];
     brands: Brand[];
+    flash?: { success?: string },
 }>();
 
+const toast = ref(props.flash?.success ?? '');
 
+if (toast.value) {
+    setTimeout(() => toast.value = '', 3000);
+}
 </script>
 
 <template>
     <Head title="Create Location" />
+    <Toast :message="flash?.success" />
     <LocationForm :form-props="store.form()" button-text="Create Location" :types="types" :brands="brands" />
 </template>

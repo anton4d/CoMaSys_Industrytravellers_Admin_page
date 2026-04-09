@@ -31,7 +31,7 @@ class BrandController extends Controller
 
         Brand::create($data);
 
-        return redirect()->route('brands.index')->with('success', 'Brand created!');
+        return redirect()->route('brand.create')->with('success', 'Brand created!');
     }
 
     public function edit(Brand $brand)
