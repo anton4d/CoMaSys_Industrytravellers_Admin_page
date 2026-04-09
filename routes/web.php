@@ -8,13 +8,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\CsvImportController;
-
-Route::inertia('/', 'Welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+use App\Http\Controllers\DashboardController;
+Route::inertia('/', 'Welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // all routes to do with the location backend
     Route::get('locations/create', [LocationController::class, 'create'])->name('locations.create');

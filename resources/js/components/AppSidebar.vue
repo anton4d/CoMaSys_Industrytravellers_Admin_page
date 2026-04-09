@@ -34,6 +34,11 @@ const mainNavItems: NavItem[] = [
         icon: Pencil,
     },
     {
+        title: 'Brands',
+        href: brandIndex(),
+        icon: Store,
+    },
+    {
         title: 'Locations',
         href:locationIndex(),
         icon: MapPin,
@@ -43,19 +48,16 @@ const mainNavItems: NavItem[] = [
         href: discountIndex(),
         icon: ShoppingBasket,
     },
-    {
-        title: 'Brands',
-        href: brandIndex(),
-        icon: Store,
-    },
+    
+    
+];
+
+const footerNavItems: NavItem[] = [
     {
         title: 'Csv Import to database',
         href: csvIndex(),
         icon: Toolbox,
-    }
-];
-
-const footerNavItems: NavItem[] = [
+    },
     {
         title: 'Main Page',
         href: 'https://industrytravellers.com/',
