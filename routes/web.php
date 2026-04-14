@@ -26,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
         Route::delete('locations/{location}', [LocationController::class, 'destroy'])->name('locations.destroy');
         Route::get('/locations/csv-import', [CsvImportController::class, 'locations'])->name('csv.locations');
+        Route::post('/locations/sync', [LocationController::class, 'syncLocations'])->name('locations.sync');
     });
 
     // platform users

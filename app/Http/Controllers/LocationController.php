@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
@@ -7,6 +8,7 @@ use App\Models\Location;
 use App\Models\LocationInfo;
 use Illuminate\Http\Request;
 use App\Enums\LocationType;
+use Illuminate\Support\Facades\Http;
 
 class LocationController extends Controller
 {
@@ -153,5 +155,18 @@ class LocationController extends Controller
             'types'    => LocationType::toArray(),
             'brands'   => Brand::orderBy('name')->get(['id', 'name']),
         ]);
+    }
+
+    public function syncLocations()
+    {
+        $response = Http::withHeaders([
+            'X-Admin-Key' => config('services.backend_api.key'),
+            'Origin' => config('app.url'),
+        ])->post(config('services.backend_api.url') . '/admin/sync-locations');
+        if ($response->successful()) {
+            return back()->with('success', 'Locations synced successfully!');
+        }
+
+        return back()->withErrors(['sync' => 'Sync failed: ' . $response->json('error', 'Unknown error')]);
     }
 }

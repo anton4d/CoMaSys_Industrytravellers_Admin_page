@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-const props = defineProps<{ message?: string }>();
+const props = defineProps<{
+    message?: string;
+    type?: 'success' | 'error';
+}>();
 
-const visible = ref(props.message ?? '');
+const visible = ref('');
 
 watch(() => props.message, (val) => {
     if (val) {
@@ -14,8 +17,13 @@ watch(() => props.message, (val) => {
 </script>
 
 <template>
-    <div v-if="visible"
-        class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300">
+    <div
+        v-if="visible"
+        :class="[
+            'fixed top-4 right-4 px-4 py-2 rounded shadow-lg transition-opacity duration-300 text-white',
+            props.type === 'error' ? 'bg-red-500' : 'bg-green-500'
+        ]"
+    >
         {{ visible }}
     </div>
 </template>

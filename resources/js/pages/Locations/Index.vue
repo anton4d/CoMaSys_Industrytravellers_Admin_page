@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Trash2, Pencil } from '@lucide/vue';
-import { ref } from 'vue';
-import { edit, create } from '@/routes/locations';
+import { computed } from 'vue';
+import { edit, create, sync } from '@/routes/locations';
 import { locations as csv } from '@/routes/csv'
 import type { Location } from '@/types/models';
 import Toast from '@/components/Toast.vue';
@@ -22,23 +22,22 @@ defineOptions({
 
 const props = defineProps<{
     locations: Record<string, Location[]>,
-    flash?: { success?: string },
     types: { id: number; name: string }[],
 }>();
 
-const typeLabel = (id: number) => props.types.find(t => t.id === id)?.name ?? '—';
+const page = usePage<{
+    flash?: { success?: string; error?: string };
+}>();
 
-const toast = ref(props.flash?.success ?? '');
-if (toast.value) setTimeout(() => toast.value = '', 3000);
+const toastMessage = computed(() => page.props.flash?.success || page.props.flash?.error || '');
+const toastType = computed(() => page.props.flash?.error ? 'error' : 'success');
+
+const typeLabel = (id: number) => props.types.find(t => t.id === id)?.name ?? '—';
 
 const deleteLocation = (id: number) => {
     if (!confirm('Are you sure you want to delete this location?')) return;
     router.visit(`/locations/${id}`, {
         method: 'delete',
-        onSuccess: () => {
-            toast.value = 'Location deleted!';
-            setTimeout(() => toast.value = '', 3000);
-        },
     });
 };
 </script>
@@ -47,10 +46,13 @@ const deleteLocation = (id: number) => {
 
     <Head title="Locations" />
 
-    <Toast :message="flash?.success" />
+    <Toast :message="toastMessage" :type="toastType" />
 
     <div class="p-6 space-y-10">
         <PageHeader title="Locations">
+            <Button @click="router.post('/locations/sync')">
+                Sync Locations
+            </Button>
             <Button as="a" :href="create().url">Add Location</Button>
             <Button as="a" :href="csv().url">Import from csv</Button>
         </PageHeader>
