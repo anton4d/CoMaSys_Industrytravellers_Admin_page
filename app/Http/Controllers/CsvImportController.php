@@ -9,6 +9,9 @@ use App\Models\Discount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Enums\AdminPermission;
+use App\Enums\LocationType;
+use App\Enums\UserType;
+use App\Models\City;
 
 class CsvImportController extends Controller
 {
@@ -51,7 +54,7 @@ class CsvImportController extends Controller
             };
 
             DB::connection('discounts')->commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::connection('discounts')->rollBack();
             return back()->withErrors(['file' => 'Import failed: ' . $e->getMessage()]);
         }
@@ -77,6 +80,8 @@ class CsvImportController extends Controller
 
     private function importLocations(array $headers, array $rows): void
     {
+        $newCities = [];
+
         foreach ($rows as $row) {
             if (count($row) !== count($headers)) continue;
             $data = array_combine($headers, $row);
@@ -89,22 +94,41 @@ class CsvImportController extends Controller
                     'brand_id'  => $brand->id,
                     'latitude'  => $data['latitude'],
                     'longitude' => $data['longitude'],
-                    'type'      => $data['type'],
+                    'type'      => LocationType::resolve($data['type'] ?? null)->value,
                 ]
             );
+
+            $cityName = $data['city'] ?? null;
+            $city     = null;
+            if ($cityName) {
+                $existed = City::where('name', $cityName)->exists();
+                $city    = City::firstOrCreate(
+                    ['name' => $cityName],
+                    ['latitude' => 0.0, 'longitude' => 0.0]
+                );
+                if (!$existed) {
+                    $newCities[] = $cityName;
+                }
+            }
 
             LocationInfo::updateOrCreate(
                 ['location_id' => $location->id],
                 [
-                    'address'      => $data['address'],
-                    'description'  => $data['description'] ?? null,
-                    'link'         => $data['link'] ?? null,
-                    'photo_path'   => $data['photo_path'] ?? null,
+                    'city_id'       => $city?->id,
+                    'address'       => $data['address'],
+                    'description'   => $data['description'] ?? null,
+                    'link'          => $data['link'] ?? null,
+                    'photo_path'    => $data['photo_path'] ?? null,
                     'discount_info' => $data['discount_info'] ?? null,
                 ]
             );
         }
+
+        if (!empty($newCities)) {
+            session(['new_cities' => $newCities]);
+        }
     }
+
 
     private function importDiscounts(array $headers, array $rows): void
     {
@@ -114,17 +138,20 @@ class CsvImportController extends Controller
 
             $brand = Brand::where('name', $data['brand'])->firstOrFail();
 
+
             Discount::updateOrCreate(
                 ['title' => $data['title'], 'brand_id' => $brand->id],
                 [
                     'brand_id'        => $brand->id,
                     'description'     => $data['description'] ?? null,
                     'expiration_date' => !empty($data['expiration_date']) ? $data['expiration_date'] : null,
-                    'user_type'       => $data['user_type'] ?? 0,
+                    'user_type' => UserType::resolve($data['user_type'] ?? null)->value,
                 ]
             );
         }
     }
+
+
 
     public function locations()
     {

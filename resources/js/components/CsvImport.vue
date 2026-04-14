@@ -7,7 +7,7 @@ import InputError from '@/components/InputError.vue';
 
 const props = defineProps<{
     model: { id: string; name: string; hint: string };
-    flash?: { success?: string };
+    flash?: { success?: string; new_cities?: string[] };
 }>();
 
 const form = useForm({
@@ -34,6 +34,16 @@ const submit = () => {
 
         <div v-if="flash?.success" class="bg-green-500 text-white px-4 py-2 rounded shadow">
             {{ flash.success }}
+        </div>
+
+        <div v-if="flash?.new_cities?.length" class="bg-yellow-500 text-white px-4 py-3 rounded shadow space-y-1">
+            <p class="font-semibold">New cities created with placeholder coordinates (0.0, 0.0):</p>
+            <ul class="list-disc list-inside text-sm">
+                <li v-for="city in flash.new_cities" :key="city">
+                    {{ city }} please update coordinates before syncing locations
+                </li>
+            </ul>
+            <a href="/cities" class="underline text-sm font-medium">Go to Cities →</a>
         </div>
 
         <div class="rounded-md bg-muted px-4 py-3 text-sm space-y-1">

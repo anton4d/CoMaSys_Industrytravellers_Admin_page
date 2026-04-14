@@ -9,6 +9,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CityController;
 use App\Enums\AdminPermission;
 
 Route::inertia('/', 'Welcome')->name('home');
@@ -66,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('discounts', [DiscountController::class, 'index'])->name('discount.index');
         Route::delete('discounts/{discount}', [DiscountController::class, 'destroy'])->name('discount.destroy');
         Route::get('/discounts/csv-import', [CsvImportController::class, 'discounts'])->name('csv.discounts');
+        Route::get('/cities/check', [CityController::class, 'check']);
     });
 
     // csv import (requires any of the above permissions - handled inside the controller)

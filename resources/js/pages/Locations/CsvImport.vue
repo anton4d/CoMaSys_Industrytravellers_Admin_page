@@ -12,9 +12,13 @@ defineOptions({
     },
 });
 
-defineProps<{ flash?: { success?: string } }>();
+defineProps<{ flash?: { success?: string; new_cities?: string[] } }>();
 
-const model = { id: 'locations', name: 'Locations', hint: 'brand, name, type, latitude, longitude, address, description, link, photo_path, discount_info' };
+const model = {
+    id:   'locations',
+    name: 'Locations',
+    hint: 'brand, name, type, latitude, longitude, city, address, description, link, photo_path, discount_info'
+};
 </script>
 
 <template>

@@ -25,6 +25,29 @@ export type Discount = {
     brand?: Brand;
 };
 
+export type City = {
+    id: number;
+    name: string;
+    latitude: number;
+    longitude: number;
+    created_at: string;
+    updated_at: string;
+};
+
+export type LocationInfo = {
+    id: number;
+    location_id: number;
+    city_id: number | null;
+    address: string;
+    description: string | null;
+    link: string | null;
+    photo_path: string | null;
+    discount_info: string | null;
+    created_at: string;
+    updated_at: string;
+    city?: City;
+};
+
 export type Location = {
     id: number;
     brand_id: number;
@@ -36,17 +59,6 @@ export type Location = {
     updated_at: string;
     brand?: Brand;
     info?: LocationInfo;
-};
-
-export type LocationInfo = {
-    id: number;
-    location_id: number;
-    address: string;
-    description: string | null;
-    link: string | null;
-    photo_path: string | null;
-    created_at: string;
-    updated_at: string;
 };
 
 

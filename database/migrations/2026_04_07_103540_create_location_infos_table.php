@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +12,15 @@ return new class extends Migration
             $table->foreignId('location_id')
                   ->constrained()
                   ->cascadeOnDelete();
+            $table->foreignId('city_id')
+                  ->nullable()
+                  ->constrained('cities')
+                  ->nullOnDelete();
             $table->string('address');
             $table->text('description')->nullable();
             $table->string('link')->nullable();
             $table->string('photo_path')->nullable();
-
+            $table->string('discount_info')->nullable();
             $table->timestamps();
         });
     }
